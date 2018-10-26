@@ -161,9 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBroadcastMessageReceived(Message message) {
-            // we should not expect to have connected previously to the device that originated
-            // the incoming broadcast message, so device information is included in this packet
-            String incomingMsg = (String) message.getContent().get(PAYLOAD_TEXT);
+                      String incomingMsg = (String) message.getContent().get(PAYLOAD_TEXT);
             String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
             Peer.DeviceType deviceType = extractType(message);
 

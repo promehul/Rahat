@@ -58,21 +58,20 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        // recover our Peer object
+
         conversationName = getIntent().getStringExtra(INTENT_EXTRA_NAME);
         conversationId   = getIntent().getStringExtra(INTENT_EXTRA_UUID);
 
-        // Configure the Toolbar
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Enable the Up button
+
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(conversationName);
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        // register the receiver to listen for incoming messages
         LocalBroadcastManager.getInstance(getBaseContext())
                 .registerReceiver(new BroadcastReceiver() {
                     @Override
@@ -100,22 +99,22 @@ public class ChatActivity extends AppCompatActivity {
 
     @OnClick({R.id.btnSend})
     public void onMessageSend(View v) {
-        // get the message and push it to the views
+
         String messageString = txtMessage.getText().toString();
         if (messageString.trim().length() > 0) {
-            // update the views
+
             txtMessage.setText("");
             Message message = new Message(messageString);
             message.setDirection(Message.OUTGOING_MESSAGE);
             messagesAdapter.addMessage(message);
 
-            // create a HashMap object to send
+
             HashMap<String, Object> content = new HashMap<>();
             content.put(PAYLOAD_TEXT, messageString);
 
-            // send text message to device(s)
+
             if (conversationId.equals(BROADCAST_CHAT)) {
-                // we put extra information in broadcast packets since they won't be bound to a session
+
                 content.put(PAYLOAD_DEVICE_NAME, Build.MANUFACTURER + " " + Build.MODEL);
                 content.put(PAYLOAD_DEVICE_TYPE, Peer.DeviceType.ANDROID.ordinal());
 
@@ -135,9 +134,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    /**
-     *      RECYCLER VIEW CLASSES
-     */
+
     class MessagesRecyclerViewAdapter
             extends RecyclerView.Adapter<MessagesRecyclerViewAdapter.MessageViewHolder> {
 

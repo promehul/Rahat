@@ -2,9 +2,6 @@ package com.bridgefy.samples.chat.entities;
 
 import com.google.gson.Gson;
 
-/**
- * @author dekaru on 5/9/17.
- */
 
 public class Message {
 
