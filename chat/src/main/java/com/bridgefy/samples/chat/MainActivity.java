@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     static final String PAYLOAD_DEVICE_TYPE  = "device_type";
     static final String PAYLOAD_DEVICE_NAME  = "device_name";
     static final String PAYLOAD_TEXT         = "text";
+    String personName;
 
     PeersRecyclerViewAdapter peersAdapter =
             new PeersRecyclerViewAdapter(new ArrayList<>());
@@ -59,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Configure the Toolbar
+     
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+        Intent intent = getIntent();
+        personName = intent.getExtras().getString("name");
 
         RecyclerView recyclerView = findViewById(R.id.peer_list);
         recyclerView.setAdapter(peersAdapter);
@@ -121,14 +124,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     *      BRIDGEFY METHODS
-     */
+
     private void startBridgefy() {
         Bridgefy.start(messageListener, stateListener);
     }
 
-    // TODO change for BridgefyUtils method
+
     public boolean isThingsDevice(Context context) {
         final PackageManager pm = context.getPackageManager();
         return pm.hasSystemFeature("android.hardware.type.embedded");
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     private MessageListener messageListener = new MessageListener() {
         @Override
         public void onMessageReceived(Message message) {
-            // direct messages carrying a Device name represent device handshakes
+
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
                 Peer peer = new Peer(message.getSenderId(),
                         (String) message.getContent().get(PAYLOAD_DEVICE_NAME));
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 peersAdapter.addPeer(peer);
                 Log.d(TAG, "Peer introduced itself: " + peer.getDeviceName());
 
-            // any other direct message should be treated as such
+
             } else {
                 String incomingMessage = (String) message.getContent().get("text");
                 Log.d(TAG, "Incoming private message: " + incomingMessage);
@@ -155,14 +156,7 @@ public class MainActivity extends AppCompatActivity {
                                 .putExtra(INTENT_EXTRA_MSG, incomingMessage));
             }
 
-            // if it's an Android Things device, reply automatically
-            if (isThingsDevice(MainActivity.this)) {
-                Log.d(TAG, "I'm a bot. Responding message automatically.");
-                HashMap<String, Object> content = new HashMap<>();
-                content.put("text", "Beep boop. I'm a bot.");
-                Message replyMessage = Bridgefy.createMessage(message.getSenderId(), content);
-                Bridgefy.sendMessage(replyMessage);
-            }
+
         }
 
         @Override
@@ -226,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Start Bridgefy
+
             startBridgefy();
 
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
@@ -236,9 +230,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     *      RECYCLER VIEW CLASSES
-     */
     class PeersRecyclerViewAdapter
             extends RecyclerView.Adapter<PeersRecyclerViewAdapter.PeerViewHolder> {
 
@@ -309,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (peer.getDeviceType()) {
                     case ANDROID:
-                        this.mContentView.setText(peer.getDeviceName() + " (android)");
+                        this.mContentView.setText(personName + " (android)");
                         break;
 
                     case IPHONE:
@@ -326,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 startActivity(new Intent(getBaseContext(), ChatActivity.class)
-                        .putExtra(INTENT_EXTRA_NAME, peer.getDeviceName())
+                        .putExtra(INTENT_EXTRA_NAME,personName)
                         .putExtra(INTENT_EXTRA_UUID, peer.getUuid()));
             }
         }

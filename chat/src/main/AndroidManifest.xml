@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.bridgefy.samples.chat">
 
     <!-- Permissions -->
@@ -13,23 +13,29 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <uses-library android:name="com.google.android.things" android:required="false" />
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
+        <uses-library
+            android:name="com.google.android.things"
+            android:required="false" />
+
+        <activity android:name=".GetName">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
+
+            android:parentActivityName=".GetName"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bridgefy.samples.chat.MainActivity" />
 
         </activity>
-
         <activity
             android:name=".ChatActivity"
             android:parentActivityName=".MainActivity">
@@ -38,9 +44,11 @@
                 android:value="com.bridgefy.samples.chat.MainActivity" />
         </activity>
 
-
         <meta-data
             android:name="com.bridgefy.sdk.API_KEY"
             android:value="254540ef-f130-463c-b13d-e2d2adcb8f3a" />
+
+        <activity android:name=".Name"></activity>
     </application>
+
 </manifest>
